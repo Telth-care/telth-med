@@ -1,0 +1,18 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html { scroll-behavior: smooth; }
+  body {
+    @apply font-sans text-ink bg-parchment antialiased leading-relaxed;
+  }
+  h3 { @apply font-serif text-ink font-semibold; }
+  p { @apply text-ink-soft; }
+  a { @apply text-inherit no-underline; }
+  ul { @apply m-0 p-0; }
+}
+
+@layer utilities {
+  .scrollbar-hide::-webkit-scrollbar { display: none; }
+}
