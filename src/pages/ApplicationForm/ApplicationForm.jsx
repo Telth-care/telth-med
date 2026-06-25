@@ -17,7 +17,7 @@ import Step8AgentInformation from './steps/Step8AgentInformation.jsx'
 
 import { STEP_META, STEP_VALIDATORS, getInitialFormData, setPath } from './formConfig.js'
 
-const API_URL = 'https://harelybackend-production.up.railway.app/api/applications'
+const API_URL = 'https://api.medpassedu.org/api/applications'
 const TOTAL_STEPS = STEP_META.length
 
 // Flattens the nested formData object into a FormData instance so File objects

@@ -2,6 +2,7 @@ import heroImg from "../assets/image-11.jpeg";
 import heroSizeImg from "../assets/image-10.jpeg";
 
 import React from "react";
+import { Link } from "react-router-dom";
 
 export default function Hero() {
   return (
@@ -42,12 +43,12 @@ export default function Hero() {
             ownership.
           </p>
           <div className="flex items-center gap-5 mb-5 flex-wrap">
-            <a
-              href="#apply"
+            <Link
+              to="/application-form"
               className="bg-parchment text-ink font-semibold text-sm px-5 py-3 rounded hover:bg-brass-dark hover:text-parchment hover:-translate-y-px hover:shadow-lg transition-all duration-200"
             >
               Apply Now
-            </a>
+            </Link>
             <a
               href="#pathways"
               className="text-brass font-semibold text-sm hover:text-parchment transition-colors duration-200"
