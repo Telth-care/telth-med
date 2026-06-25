@@ -55,20 +55,20 @@ const accentMap = {
   blue: {
     border: "border-t-blue-500",
     badge: "bg-blue-500 text-white",
-    tag: "bg-yellow-600/60 border-brass-dark",
-    cta: "text-blue-600 hover:text-blue-800",
+    tag: "bg-yellow-300/40 border-yellow-400/60",
+    cta: "text-yellow-600/90  hover:text-yellow-600/90 ",
   },
   purple: {
     border: "border-t-purple-500",
     badge: "bg-purple-500 text-white",
-    tag: "bg-yellow-600/60 border-brass-dark",
-    cta: "text-purple-600 hover:text-purple-800",
+    tag: "bg-yellow-300/40 border-yellow-400/60",
+    cta: "text-yellow-600/90  hover:text-yellow-600/90 ",
   },
   green: {
     border: "border-t-green-500",
     badge: "bg-green-500 text-white",
-    tag: "bg-yellow-600/60 border-brass-dark",
-    cta: "text-green-600 hover:text-green-800",
+    tag: "bg-yellow-300/40 border-yellow-400/60",
+    cta: "text-yellow-600/90 hover:text-yellow-600/90 ",
   },
 };
 
