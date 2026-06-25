@@ -68,27 +68,30 @@ export default function Step1Program({ data, update }) {
           <Field label="First Name" required><TextInput required placeholder="Enter first name" value={s1.firstName} onChange={set('firstName')} /></Field>
           <Field label="Last Name (as in passport)" required><TextInput required placeholder="Enter last name" value={s1.lastName} onChange={set('lastName')} /></Field>
           <Field label="Middle Name"><TextInput placeholder="Enter middle name" value={s1.middleName} onChange={set('middleName')} /></Field>
-          <Field label="Passport Number (IND/INT) or Aadhar Card/PAN Number" required>
-            <TextInput required placeholder="Enter Passport or Aadhar number" value={s1.passportNumber} onChange={set('passportNumber')} />
-          </Field>
 
-          <Field label="Gender" required>
-            <div className="flex gap-3">
-              {['Male', 'Female', 'Others'].map((g) => (
-                <button
-                  key={g}
-                  type="button"
-                  onClick={() => update('step1.gender', g)}
-                  className={`px-4 py-2.5 rounded-2xl border text-sm font-medium transition ${
-                    s1.gender === g ? 'bg-[#0F4C81] text-white border-[#0F4C81]' : 'bg-[#F5F8FC] text-[#0D1B2E] border-[#0F4C81]/15'
-                  }`}
-                >
-                  {g}
-                </button>
-              ))}
-            </div>
-          </Field>
-          <Field label="Age" required><TextInput required type="number" min="0" placeholder="Enter age" value={s1.age} onChange={set('age')} /></Field>
+          <div className="grid sm:grid-cols-3 gap-x-6 gap-y-5 sm:col-span-2">
+            <Field label="Passport Number (IND/INT)Aadhar Card/PAN Number" required>
+              <TextInput required placeholder="Enter Passport or Aadhar number" value={s1.passportNumber} onChange={set('passportNumber')} />
+            </Field>
+
+            <Field label="Gender" required>
+              <div className="flex gap-3">
+                {['Male', 'Female', 'Others'].map((g) => (
+                  <button
+                    key={g}
+                    type="button"
+                    onClick={() => update('step1.gender', g)}
+                    className={`px-4 py-2.5 rounded-2xl border text-sm font-medium transition ${
+                      s1.gender === g ? 'bg-[#0F4C81] text-white border-[#0F4C81]' : 'bg-[#F5F8FC] text-[#0D1B2E] border-[#0F4C81]/15'
+                    }`}
+                  >
+                    {g}
+                  </button>
+                ))}
+              </div>
+            </Field>
+            <Field label="Age" required><TextInput required type="number" min="0" placeholder="Enter age" value={s1.age} onChange={set('age')} /></Field>
+          </div>
 
           <Field label="Current Mailing Address (Number and Street)" required>
             <TextInput required placeholder="Enter current address" value={s1.currentMailingAddress.street} onChange={setAddr('street')} />

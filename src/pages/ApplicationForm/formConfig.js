@@ -1,6 +1,4 @@
 // Step metadata exactly as per design screens (label + completion % shown in stepper)
-// Order: Checklist now comes first (Step 1) so applicants see what to gather/upload
-// before going through the rest of the application.
 export const STEP_META = [
   { key: 'requirement', label: 'Requirement',           percent: 0   },
   { key: 'program',     label: 'Program',               percent: 12  },
@@ -54,20 +52,27 @@ export const getInitialFormData = () => ({
     previousInstitutions: [emptyPreviousInstitution()],
   },
   personalStatement: '',
-  campusSecurity: { criminalConviction: null, academicDismissal: null, explanationLetter: '' },
-  studentAgreement: { agreed: false, signedDate: '' },
+  personalStatementMethod: 'type',
+  personalStatementFileUrl: '',
+  campusSecurity: { criminalConviction: false, academicDismissal: false, explanationLetter: '' },
+  studentAgreement: { agreed: false, signatureUrl: '', signedDate: '' },
   checklist: {
+    passportPhotos: false, registrationFeePaid: false, passportCopy: false,
+    healthCertificate: false, policeClearanceCertificate: false, recommendationLetters: false,
+    personalStatementSubmitted: false, transcriptsSubmitted: false,
+    highSchoolDiplomaSubmitted: false, documentsConfirmed: false,
+    // File slots used by Step7Checklist (FileChecklistRow / MultiFileChecklistRow).
+    // Without this, cl.files[key] crashes the Documents step on load.
     files: {
-      passportPhotos: null,
+      passportPhotos: [],
       passportCopy: null,
-      recommendationLetters: null,
+      recommendationLetters: [],
       personalStatementSubmitted: null,
       transcriptsSubmitted: null,
       highSchoolDiplomaSubmitted: null,
     },
-    documentsConfirmed: false,
   },
-  agentInformation: { name: '', contactInformation: '', agentNumber: '' },
+  agentInformation: { name: '', contactInformation: '' },
   status: 'draft',
 })
 
@@ -155,7 +160,9 @@ function validateAcademics(d) {
 }
 
 function validatePersonalStatement(d) {
-  return d.personalStatement && d.personalStatement.trim() ? [] : ['Personal Statement']
+  const hasTyped = !!(d.personalStatement && d.personalStatement.trim())
+  const hasUpload = !!d.personalStatementFileUrl
+  return hasTyped || hasUpload ? [] : ['Personal Statement (type it or upload a document)']
 }
 
 function validateCampusSecurity(d) {

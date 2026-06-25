@@ -1,5 +1,24 @@
+import { useState } from 'react'
+
 const inputCls =
   'w-full bg-[#F5F8FC] border border-[#0F4C81]/15 rounded-2xl px-3.5 py-2.5 text-sm text-[#0D1B2E] placeholder-[#9AAFC4] outline-none focus:ring-2 focus:ring-[#0F4C81]/25 focus:border-[#0F4C81]/40 transition'
+
+// ── Shared client-side file-size guard (mirrors the backend's 5MB limit) ──
+export const MAX_FILE_SIZE_MB = 5
+export const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024
+
+export function formatFileSize(bytes) {
+  if (bytes < 1024 * 1024) return `${Math.max(1, Math.ceil(bytes / 1024))} KB`
+  return `${(bytes / (1024 * 1024)).toFixed(2)} MB`
+}
+
+export function isFileTooLarge(file) {
+  return !!file && file.size > MAX_FILE_SIZE_BYTES
+}
+
+export function fileTooLargeMessage(file) {
+  return `"${file.name}" is ${formatFileSize(file.size)}. Maximum allowed size is ${MAX_FILE_SIZE_MB} MB.`
+}
 
 export function Card({ icon, title, children }) {
   return (
@@ -50,29 +69,47 @@ export function Select({ children, className = '', ...props }) {
 }
 
 export function PillUpload({ label, sublabel, accept = '.png,.jpg,.jpeg', onFile }) {
+  const [error, setError] = useState('')
+
+  const handleChange = (e) => {
+    const file = e.target.files?.[0] || null
+    if (isFileTooLarge(file)) {
+      setError(fileTooLargeMessage(file))
+      e.target.value = ''
+      onFile?.(null)
+      return
+    }
+    setError('')
+    onFile?.(file)
+  }
+
   return (
-    <label className="flex flex-col items-center justify-center gap-2 p-8 rounded-2xl ring-2 ring-[#0F4C81]/20 cursor-pointer text-center hover:ring-[#0F4C81]/40 transition">
-      <div className="w-16 h-16 rounded-2xl bg-[#0F4C81]/10 flex items-center justify-center text-[#0F4C81]">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-          <rect x="3" y="6" width="18" height="14" rx="2" />
-          <path d="M8 6l1.5-2.5h5L16 6" />
-          <circle cx="12" cy="13" r="3.2" />
-        </svg>
-      </div>
-      <span className="text-sm font-semibold text-[#0D1B2E]">{label}</span>
-      <span className="text-xs text-[#5A6A7E]">{sublabel || 'Drag and drop or click to browse'}</span>
-      <span className="flex gap-2 pt-1">
-        {['PNG', 'JPG', 'JPEG'].map((t) => (
-          <span key={t} className="px-2 py-0.5 rounded bg-[#E8EFF7] text-[#0F4C81] text-[10px] font-semibold">{t}</span>
-        ))}
-      </span>
-      <input
-        type="file"
-        accept={accept}
-        className="hidden"
-        onChange={(e) => onFile?.(e.target.files?.[0] || null)}
-      />
-    </label>
+    <div>
+      <label className="flex flex-col items-center justify-center gap-2 p-8 rounded-2xl ring-2 ring-[#0F4C81]/20 cursor-pointer text-center hover:ring-[#0F4C81]/40 transition">
+        <div className="w-16 h-16 rounded-2xl bg-[#0F4C81]/10 flex items-center justify-center text-[#0F4C81]">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+            <rect x="3" y="6" width="18" height="14" rx="2" />
+            <path d="M8 6l1.5-2.5h5L16 6" />
+            <circle cx="12" cy="13" r="3.2" />
+          </svg>
+        </div>
+        <span className="text-sm font-semibold text-[#0D1B2E]">{label}</span>
+        <span className="text-xs text-[#5A6A7E]">{sublabel || 'Drag and drop or click to browse'}</span>
+        <span className="flex gap-2 pt-1">
+          {['PNG', 'JPG', 'JPEG'].map((t) => (
+            <span key={t} className="px-2 py-0.5 rounded bg-[#E8EFF7] text-[#0F4C81] text-[10px] font-semibold">{t}</span>
+          ))}
+        </span>
+        <span className="text-[10px] text-[#9AAFC4]">Max {MAX_FILE_SIZE_MB} MB</span>
+        <input
+          type="file"
+          accept={accept}
+          className="hidden"
+          onChange={handleChange}
+        />
+      </label>
+      {error && <p className="text-xs text-red-600 font-medium mt-2 text-center">{error}</p>}
+    </div>
   )
 }
 
@@ -168,27 +205,44 @@ export function MonthYearSelect({ value, onChange, yearsAhead = 3 }) {
 // Compact upload row used in the Checklist step — one document per row,
 // stores the actual File so it can be sent as multipart/form-data.
 export function FileChecklistRow({ label, file, onFile, accept = '.pdf,.png,.jpg,.jpeg' }) {
+  const [error, setError] = useState('')
+
+  const handleChange = (e) => {
+    const f = e.target.files?.[0] || null
+    if (isFileTooLarge(f)) {
+      setError(fileTooLargeMessage(f))
+      e.target.value = ''
+      onFile(null)
+      return
+    }
+    setError('')
+    onFile(f)
+  }
+
   return (
-    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2.5 py-3 border-b border-[#0F4C81]/10 last:border-0">
-      <span className="text-sm text-[#0D1B2E] font-medium pr-3">{label}</span>
-      <label className="inline-flex items-center gap-2 self-start sm:self-auto shrink-0 px-3.5 py-2 rounded-xl ring-1 ring-[#0F4C81]/20 bg-[#F5F8FC] text-xs font-semibold text-[#0F4C81] cursor-pointer hover:ring-[#0F4C81]/40 transition max-w-full">
-        {file ? (
-          <>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="flex-shrink-0">
-              <path d="M20 6L9 17l-5-5" />
-            </svg>
-            <span className="truncate max-w-[160px]">{file.name}</span>
-          </>
-        ) : (
-          <>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="flex-shrink-0">
-              <path d="M12 3v12m0 0l-4-4m4 4l4-4" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" />
-            </svg>
-            Upload
-          </>
-        )}
-        <input type="file" accept={accept} className="hidden" onChange={(e) => onFile(e.target.files?.[0] || null)} />
-      </label>
+    <div className="flex flex-col gap-1.5 py-3 border-b border-[#0F4C81]/10 last:border-0">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2.5">
+        <span className="text-sm text-[#0D1B2E] font-medium pr-3">{label}</span>
+        <label className="inline-flex items-center gap-2 self-start sm:self-auto shrink-0 px-3.5 py-2 rounded-xl ring-1 ring-[#0F4C81]/20 bg-[#F5F8FC] text-xs font-semibold text-[#0F4C81] cursor-pointer hover:ring-[#0F4C81]/40 transition max-w-full">
+          {file ? (
+            <>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="flex-shrink-0">
+                <path d="M20 6L9 17l-5-5" />
+              </svg>
+              <span className="truncate max-w-[160px]">{file.name}</span>
+            </>
+          ) : (
+            <>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="flex-shrink-0">
+                <path d="M12 3v12m0 0l-4-4m4 4l4-4" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" />
+              </svg>
+              Upload
+            </>
+          )}
+          <input type="file" accept={accept} className="hidden" onChange={handleChange} />
+        </label>
+      </div>
+      {error && <p className="text-xs text-red-600 font-medium">{error}</p>}
     </div>
   )
 }
@@ -198,6 +252,20 @@ export function FileChecklistRow({ label, file, onFile, accept = '.pdf,.png,.jpg
 // requirement (e.g. 3 passport photos, 2 recommendation letters). Stores an array
 // of Files at the same formData path so it can still be sent as multipart/form-data.
 export function MultiFileChecklistRow({ label, count, files = [], onFile, accept = '.pdf,.png,.jpg,.jpeg' }) {
+  const [errors, setErrors] = useState({})
+
+  const handleChange = (i, e) => {
+    const f = e.target.files?.[0] || null
+    if (isFileTooLarge(f)) {
+      setErrors((prev) => ({ ...prev, [i]: fileTooLargeMessage(f) }))
+      e.target.value = ''
+      onFile(i, null)
+      return
+    }
+    setErrors((prev) => ({ ...prev, [i]: '' }))
+    onFile(i, f)
+  }
+
   return (
     <div className="flex flex-col gap-2.5 py-3 border-b border-[#0F4C81]/10 last:border-0">
       <span className="text-sm text-[#0D1B2E] font-medium">{label}</span>
@@ -228,12 +296,19 @@ export function MultiFileChecklistRow({ label, count, files = [], onFile, accept
                 type="file"
                 accept={accept}
                 className="hidden"
-                onChange={(e) => onFile(i, e.target.files?.[0] || null)}
+                onChange={(e) => handleChange(i, e)}
               />
             </label>
           )
         })}
       </div>
+      {Object.entries(errors).some(([, msg]) => msg) && (
+        <div className="flex flex-col gap-0.5">
+          {Object.entries(errors).map(([i, msg]) => msg && (
+            <p key={i} className="text-xs text-red-600 font-medium">Slot {Number(i) + 1}: {msg}</p>
+          ))}
+        </div>
+      )}
     </div>
   )
 }
