@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import tohomeImg from "../assets/image-1.jpeg";
 import ApplicationForm from '../pages/ApplicationForm/ApplicationForm';
+import { ClipboardList } from "lucide-react"
 
 /* ─── shared field components ─────────────────────────────── */
 function Field({ label, children, className = '' }) {
@@ -186,7 +187,7 @@ function CandidateForm() {
       {/* Right: Navigation card to Application Form */}
       <div className="bg-paper rounded-[10px] overflow-hidden shadow-panel p-8 flex flex-col items-center justify-center min-h-[400px]">
         <div className="text-center max-w-sm mx-auto">
-          <div className="text-6xl mb-6">📝</div>
+<ClipboardList size={56} style={{ color: "#0F4C81" }} className="mb-6 mx-auto" />
           <h3 className="text-xl font-bold text-ink mb-3">Start Your Application</h3>
           <p className="text-ink-soft text-sm mb-6">
             Fill out our comprehensive application form to begin your journey in the Global Healthcare Mobility Programme.

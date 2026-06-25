@@ -1,9 +1,18 @@
+// CareerPathway.jsx
+import {
+  Stethoscope,
+  Users,
+  Map,
+  BotMessageSquare,
+  Trophy,
+} from "lucide-react"
+
 const steps = [
-  { icon: '🩺', title: 'Clinical Professional',      sub: 'Your starting point',       highlight: false },
-  { icon: '👥', title: 'Collaborative Care Manager', sub: 'CCM role within Telth',      highlight: false },
-  { icon: '🗺️', title: 'Regional Care Manager',      sub: 'Lead regional operations',   highlight: false },
-  { icon: '🤖', title: 'AI Hub Operations Manager',  sub: 'Manage an AI Health Hub',    highlight: false },
-  { icon: '🏆', title: 'Franchise Partner',          sub: 'Own your health hub',        highlight: true  },
+  { icon: Stethoscope, color: "#06B6D4", title: 'Clinical Professional',      sub: 'Your starting point',       highlight: false },
+  { icon: Users,       color: "#10B981", title: 'Collaborative Care Manager', sub: 'CCM role within Telth',      highlight: false },
+  { icon: Map,         color: "#8B5CF6", title: 'Regional Care Manager',      sub: 'Lead regional operations',   highlight: false },
+  { icon: BotMessageSquare, color: "#F97316", title: 'AI Hub Operations Manager',  sub: 'Manage an AI Health Hub',    highlight: false },
+  { icon: Trophy,      color: "#F59E0B", title: 'Franchise Partner',          sub: 'Own your health hub',        highlight: true  },
 ]
 
 export default function CareerPathway() {
@@ -19,25 +28,29 @@ export default function CareerPathway() {
         </p>
 
         <div className="flex flex-wrap items-center justify-center gap-3">
-          {steps.map((s, i) => (
-            <>
-              <div
-                key={s.title}
-                className={`flex flex-col items-center text-center rounded-md px-4 py-5 min-w-[110px] max-w-[140px] ${
-                  s.highlight
-                    ? 'bg-brass/20 border border-brass'
-                    : 'bg-parchment/[0.07] border border-parchment/15'
-                }`}
-              >
-                <span className="text-2xl mb-2">{s.icon}</span>
-                <strong className="block font-sans font-bold text-parchment text-[0.8rem] mb-1">{s.title}</strong>
-                <small className="text-parchment/50 text-[0.72rem]">{s.sub}</small>
-              </div>
-              {i < steps.length - 1 && (
-                <span key={`arr-${i}`} className="text-brass font-bold text-xl">→</span>
-              )}
-            </>
-          ))}
+          {steps.map((s, i) => {
+            const Icon = s.icon // ← component ref from step
+            return (
+              <>
+                <div
+                  key={s.title}
+                  className={`flex flex-col items-center text-center rounded-md px-4 py-5 min-w-[110px] max-w-[140px] ${
+                    s.highlight
+                      ? 'bg-brass/20 border border-brass'
+                      : 'bg-parchment/[0.07] border border-parchment/15'
+                  }`}
+                >
+                  {/* Icon with per-step color */}
+                  <Icon size={28} style={{ color: s.color }} className="mb-2" />
+                  <strong className="block font-sans font-bold text-parchment text-[0.8rem] mb-1">{s.title}</strong>
+                  <small className="text-parchment/50 text-[0.72rem]">{s.sub}</small>
+                </div>
+                {i < steps.length - 1 && (
+                  <span key={`arr-${i}`} className="text-brass font-bold text-xl">→</span>
+                )}
+              </>
+            )
+          })}
         </div>
       </div>
     </section>

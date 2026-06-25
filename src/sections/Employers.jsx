@@ -1,11 +1,17 @@
-import caredoctorImg from "../assets/image-2.jpeg";
-
+// Employers.jsx
+import caredoctorImg from "../assets/image-2.jpeg"
+import {
+  Handshake,
+  TrendingUp,
+  Globe,
+  Hospital,
+} from "lucide-react"
 
 const cards = [
-  { icon: '🤝', title: 'Care Workforce Placement',   body: 'Place your registered care workers and support staff into structured roles within the Telth Care-at-Home and Telehealth networks — with skills upgrading built in.' },
-  { icon: '📈', title: 'Upskilling & CPD Pipeline',  body: 'We provide access to NSDC-aligned training, IoMT device training, telehealth coordination and care management certifications to elevate your workforce value.' },
-  { icon: '🌍', title: 'Global Mobility Pathways',   body: 'Eligible care workers can access structured pathways toward international roles in the UK and beyond — subject to visa rules, regulatory compliance and employer requirements.' },
-  { icon: '🏥', title: 'AI Hub Integration',         body: 'Connect your workforce to Telth AI Health Hubs as Care Managers, Community Health Workers or Patient Engagement Specialists.' },
+  { icon: Handshake,  color: "#8B5CF6", title: 'Care Workforce Placement',  body: 'Place your registered care workers and support staff into structured roles within the Telth Care-at-Home and Telehealth networks — with skills upgrading built in.' },
+  { icon: TrendingUp, color: "#10B981", title: 'Upskilling & CPD Pipeline', body: 'We provide access to NSDC-aligned training, IoMT device training, telehealth coordination and care management certifications to elevate your workforce value.' },
+  { icon: Globe,      color: "#06B6D4", title: 'Global Mobility Pathways',  body: 'Eligible care workers can access structured pathways toward international roles in the UK and beyond — subject to visa rules, regulatory compliance and employer requirements.' },
+  { icon: Hospital,   color: "#F97316", title: 'AI Hub Integration',        body: 'Connect your workforce to Telth AI Health Hubs as Care Managers, Community Health Workers or Patient Engagement Specialists.' },
 ]
 
 export default function Employers() {
@@ -24,13 +30,17 @@ export default function Employers() {
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
-          {cards.map(c => (
-            <div key={c.title} className="bg-paper border border-line rounded-md shadow-card p-6">
-              <div className="text-3xl mb-3">{c.icon}</div>
-              <h3 className="font-serif text-ink font-semibold text-[1rem] mb-2">{c.title}</h3>
-              <p className="text-ink-soft text-[0.88rem] m-0">{c.body}</p>
-            </div>
-          ))}
+          {cards.map(c => {
+            const Icon = c.icon // ← component ref from card
+            return (
+              <div key={c.title} className="bg-paper border border-line rounded-md shadow-card p-6">
+                {/* Icon with per-card color */}
+                <Icon size={32} style={{ color: c.color }} className="mb-3" />
+                <h3 className="font-serif text-ink font-semibold text-[1rem] mb-2">{c.title}</h3>
+                <p className="text-ink-soft text-[0.88rem] m-0">{c.body}</p>
+              </div>
+            )
+          })}
         </div>
 
         {/* CTA bar */}
