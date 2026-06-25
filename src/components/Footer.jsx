@@ -19,7 +19,7 @@ export default function Footer() {
         </nav>
       </div>
       <div className="max-w-site mx-auto px-6 py-5 text-[0.74rem] text-parchment/40">
-        <p className="m-0 mb-1">📞 +91 12345 67890 &nbsp;|&nbsp; ✉️ info@telthhealth.com &nbsp;|&nbsp; 🌐 www.telthhealth.com</p>
+        <p className="m-0 mb-1">📞 +91 7834935011 &nbsp;|&nbsp; ✉️  greenkeyistudios@gmail.com &nbsp;|&nbsp; 🌐 https://www.medpassedu.org/</p>
         <p className="m-0">© {new Date().getFullYear()} Telth &amp; Harley Health System. For informational purposes only — not an offer, admission, employment contract or guarantee of any outcome.</p>
       </div>
     </footer>

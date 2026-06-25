@@ -20,7 +20,7 @@ export default function App() {
           path="/"
           element={
             <>
-              <RegStrip />
+              {/* <RegStrip /> */}
               <Header />
               <Home />
               <Footer />
