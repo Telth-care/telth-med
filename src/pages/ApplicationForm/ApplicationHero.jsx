@@ -18,14 +18,6 @@ export default function ApplicationHero() {
           </span>
         </div>
 
-        <span className="inline-flex items-center gap-2 bg-white/20 ring-1 ring-white/30 text-white text-xs font-semibold px-3 py-1.5 rounded-full mb-5">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
-            <rect x="3" y="5" width="18" height="16" rx="2" />
-            <path d="M3 9h18M8 3v4M16 3v4" />
-          </svg>
-          Admission Portal — 2025/2026 Academic Year
-        </span>
-
         <h1 className="text-2xl sm:text-[30px] font-bold leading-tight max-w-2xl">
           Application for Collaborative Care Managers Admission
         </h1>

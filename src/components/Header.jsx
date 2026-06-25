@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+// Header.jsx
+import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 
 const navLinks = [
@@ -16,20 +17,52 @@ export default function Header() {
   const location = useLocation()
   const navigate = useNavigate()
   const isHome = location.pathname === '/'
+  const prevPath = useRef(location.pathname)
 
+  // Scroll shadow effect
   useEffect(() => {
     const onScroll = () => setShadow(window.scrollY > 8)
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
+  // Scroll to top on route change
+  useEffect(() => {
+    if (prevPath.current !== location.pathname) {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth',
+      })
+      prevPath.current = location.pathname
+    }
+  }, [location.pathname])
+
+  // Handle anchor navigation
   const goToAnchor = (e, hash) => {
-    if (isHome) return // let the browser handle in-page smooth scroll
     e.preventDefault()
-    navigate('/')
-    setTimeout(() => {
-      document.querySelector(hash)?.scrollIntoView({ behavior: 'smooth' })
-    }, 60)
+    
+    // If not on home page, navigate to home first
+    if (!isHome) {
+      navigate('/')
+      // Wait for navigation to complete then scroll
+      setTimeout(() => {
+        const element = document.querySelector(hash)
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        } else {
+          window.scrollTo({ top: 0, behavior: 'smooth' })
+        }
+      }, 150)
+      return
+    }
+
+    // If on home page, scroll to the section
+    const element = document.querySelector(hash)
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
   }
 
   return (
@@ -53,7 +86,7 @@ export default function Header() {
           {navLinks.map(l => (
             <a
               key={l.href}
-              href={isHome ? l.href : `/${l.href}`}
+              href={l.href}
               onClick={(e) => goToAnchor(e, l.href)}
               className="hover:text-parchment transition-colors"
             >

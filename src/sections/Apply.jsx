@@ -1,5 +1,8 @@
-import { useState } from 'react'
+// Apply.tsx
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import tohomeImg from "../assets/image-1.jpeg";
+import ApplicationForm from '../pages/ApplicationForm/ApplicationForm';
 
 /* ─── shared field components ─────────────────────────────── */
 function Field({ label, children, className = '' }) {
@@ -36,17 +39,6 @@ function Consent({ children }) {
       <span>{children}</span>
     </label>
   )
-}
-
-/* ─── Local-only form submission hook (Candidate form) ────── */
-function useFormSubmit(successMsg) {
-  const [done, setDone] = useState(false)
-  const handle = (e) => {
-    e.preventDefault()
-    setDone(true)
-    setTimeout(() => { setDone(false); e.target.reset() }, 3500)
-  }
-  return { done, handle, btnLabel: done ? `✓ ${successMsg}` : undefined }
 }
 
 /* ─── API-backed form submission hook ─────────────────────── */
@@ -155,9 +147,14 @@ function buildEmployerNotes(formData, workforceTypesSelected) {
   return parts.join(' ')
 }
 
-/* ─── CANDIDATE FORM ──────────────────────────────────────── */
+/* ─── CANDIDATE FORM - Navigates to Application Form ────── */
 function CandidateForm() {
-  const { done, handle, btnLabel } = useFormSubmit('Candidate application received')
+  const navigate = useNavigate();
+
+  const handleNavigate = () => {
+    navigate('/application-form');
+  };
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-[0.9fr_1.1fr] gap-12 items-start">
       {/* Left info panel */}
@@ -186,121 +183,24 @@ function CandidateForm() {
         />
       </div>
 
-      {/* Right: Form card — white bg, rounded, shadow matches PDF */}
-      <div className="bg-paper rounded-[10px] overflow-hidden shadow-panel">
-        <form onSubmit={handle} className="p-8">
-          {/* Full name */}
-          <Field label="Full name *">
-            <Input type="text" required placeholder="Dr. / Mr. / Ms. Your Name" />
-          </Field>
-
-          {/* Email + Phone row */}
-          <div className="grid grid-cols-2 gap-4">
-            <Field label="Email *">
-              <Input type="email" required placeholder="you@example.com" />
-            </Field>
-            <Field label="Phone / WhatsApp *">
-              <Input type="tel" required placeholder="+91 / +44 / +1" />
-            </Field>
-          </div>
-
-          {/* Country + Nationality row */}
-          <div className="grid grid-cols-2 gap-4">
-            <Field label="Country of residence *">
-              <Select required defaultValue="">
-                <option value="" disabled>Select country</option>
-                {['India','United Kingdom','United States','UAE / Gulf','Other'].map(o => (
-                  <option key={o}>{o}</option>
-                ))}
-              </Select>
-            </Field>
-            <Field label="Nationality">
-              <Input type="text" placeholder="e.g. Indian, British" />
-            </Field>
-          </div>
-
-          {/* Current qualification */}
-          <Field label="Current highest qualification *">
-            <Select required defaultValue="">
-              <option value="" disabled>Select one</option>
-              {[
-                'Healthcare Worker / Caregiver',
-                'Care Manager',
-                'Nurse (Registered)',
-                'Physician Associate (PA)',
-                'Foreign Medical Graduate (FMG)',
-                'MBBS / MBChB Doctor',
-                'MD / Specialist Doctor',
-                'MSc Digital Health',
-                'MSc Health Management',
-                'MSc Nursing / Allied Health',
-                'Other Postgraduate',
-                'Fresh Graduate (Life Sciences)',
-                'Other',
-              ].map(o => <option key={o}>{o}</option>)}
-            </Select>
-          </Field>
-
-          {/* Experience + Pathway row */}
-          <div className="grid grid-cols-2 gap-4">
-            <Field label="Years of experience">
-              <Select defaultValue="">
-                <option value="" disabled>Select</option>
-                {[
-                  '0 – Student / Fresh Graduate',
-                  'Less than 1 year',
-                  '1 – 3 years',
-                  '3 – 5 years',
-                  '5 – 10 years',
-                  '10+ years',
-                ].map(o => <option key={o}>{o}</option>)}
-              </Select>
-            </Field>
-            <Field label="Preferred pathway *">
-              <Select required defaultValue="">
-                <option value="" disabled>Select one</option>
-                {[
-                  'Care Manager / Care-to-Home (India)',
-                  'Collaborative Care Management (Nurse/PA)',
-                  'Physician / Healthcare Entrepreneur',
-                  'Postgraduate Programme',
-                  'Professional Fellowship',
-                  'Telth Network Partner / Franchise',
-                  'Not sure — need guidance',
-                ].map(o => <option key={o}>{o}</option>)}
-              </Select>
-            </Field>
-          </div>
-
-          {/* Goals textarea */}
-          <Field label="Current highest qualification *">
-            <Textarea
-              rows={4}
-              placeholder="Tell us what you are hoping to achieve through this programme.."
-            />
-          </Field>
-
-          {/* Consent checkbox */}
-          <Consent>
-            I understand this is an eligibility enquiry, not an application or offer, and that admissions, work rights, employment and partnership outcomes are not guaranteed.
-          </Consent>
-
-          {/* Submit */}
-          <button
-            type="submit"
-            disabled={done}
-            className={`w-full font-semibold text-sm py-3 rounded transition-colors ${
-              done
-                ? 'bg-teal/80 text-parchment opacity-75 cursor-not-allowed'
-                : 'bg-ink text-parchment hover:bg-brass-dark'
-            }`}
-          >
-            {btnLabel || 'Submit Candidate Application'}
-          </button>
-          <p className="text-[0.74rem] text-ink-soft text-center mt-3">
-            Our admissions team will be in touch within 3–5 business days.
+      {/* Right: Navigation card to Application Form */}
+      <div className="bg-paper rounded-[10px] overflow-hidden shadow-panel p-8 flex flex-col items-center justify-center min-h-[400px]">
+        <div className="text-center max-w-sm mx-auto">
+          <div className="text-6xl mb-6">📝</div>
+          <h3 className="text-xl font-bold text-ink mb-3">Start Your Application</h3>
+          <p className="text-ink-soft text-sm mb-6">
+            Fill out our comprehensive application form to begin your journey in the Global Healthcare Mobility Programme.
           </p>
-        </form>
+          <button
+            onClick={handleNavigate}
+            className="w-full bg-ink text-parchment font-semibold text-sm py-3.5 rounded-lg hover:bg-brass-dark hover:-translate-y-0.5 transition-all duration-300 shadow-md hover:shadow-lg"
+          >
+            Open Application Form →
+          </button>
+          <p className="text-ink-soft/60 text-xs mt-4">
+            Takes approximately 10-15 minutes to complete
+          </p>
+        </div>
       </div>
     </div>
   )
@@ -309,7 +209,7 @@ function CandidateForm() {
 /* ─── UNIVERSITY FORM ──────────────────────────────────────── */
 function UniversityForm() {
   const { status, handle, btnLabel, errorMsg } = useApiFormSubmit(
-    'https://harelybackend-production.up.railway.app/api/institutions',
+    'https://api.medpassedu.org/api/institutions',
     buildUniversityPayload,
     'University interest received'
   )
@@ -457,7 +357,7 @@ const workforceTypes = [
 
 function EmployerForm() {
   const { status, handle, btnLabel, errorMsg } = useApiFormSubmit(
-    'https://harelybackend-production.up.railway.app/api/organisations',
+    'https://api.medpassedu.org/api/organisations',
     buildEmployerPayload,
     'Partnership interest received'
   )
