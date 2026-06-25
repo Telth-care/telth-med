@@ -1,3 +1,6 @@
+import caretoworldImg from "../assets/image-9.jpeg";
+
+
 const items = [
   { label: 'Admissions',            body: 'Subject to university and institutional decision' },
   { label: 'Visa & work rights',    body: 'Subject to immigration rules in force' },
@@ -9,8 +12,9 @@ const items = [
 
 export default function ComplianceLedger() {
   return (
-    <section id="compliance" className="bg-ink py-14 border-t-4 border-brass">
-      <div className="max-w-site mx-auto px-6">
+    <section id="compliance" className="relative overflow-hidden bg-ink py-14 border-t-4 border-brass">
+      <img src={caretoworldImg} alt="caretoworldImg" className="absolute inset-0 w-full h-full object-cover opacity-[0.13]" />
+      <div className="relative z-10 max-w-site mx-auto px-6">
         <div className="flex items-start gap-4 mb-5">
           <span className="w-10 h-10 rounded-full border border-brass text-brass flex items-center justify-center text-base flex-shrink-0">✓</span>
           <div>

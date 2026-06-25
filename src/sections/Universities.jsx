@@ -1,3 +1,6 @@
+import globalImg from "../assets/image-3.jpeg";
+
+
 const checklist = [
   'Employment-linked pathway for MSc Digital Health, MSc Health Management, MSc Nursing and allied programmes',
   'Live industry exposure through Telth AI Health Hubs',
@@ -9,8 +12,10 @@ const checklist = [
 
 export default function Universities() {
   return (
-    <section id="universities" className="py-[72px] bg-parchment">
-      <div className="max-w-site mx-auto px-6">
+    <section id="universities" className="relative overflow-hidden py-[72px] bg-parchment">
+      <img src={globalImg} alt="globalImg" className="absolute right-0 top-0 h-full w-[60%] object-cover" />
+      <div className="absolute right-0 top-0 h-full w-[60%] bg-gradient-to-l from-transparent to-parchment" />
+      <div className="relative z-10 max-w-site mx-auto px-6">
         {/* Two-col top */}
         <div className="grid grid-cols-1 md:grid-cols-[1.15fr_0.85fr] gap-12 items-center mb-10">
           <div>

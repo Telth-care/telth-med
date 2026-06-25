@@ -13,6 +13,7 @@ export default {
         line:       '#DCD5C6',
         brass:      '#A8793F',
         'brass-dark': '#8C6531',
+        gold:       '#DF9A3D',
         'brass-tint': '#F1E6D3',
         teal:       '#1B5E55',
         'teal-tint':'#E3EEEA',

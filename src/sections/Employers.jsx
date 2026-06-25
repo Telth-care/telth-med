@@ -1,3 +1,6 @@
+import caredoctorImg from "../assets/image-2.jpeg";
+
+
 const cards = [
   { icon: '🤝', title: 'Care Workforce Placement',   body: 'Place your registered care workers and support staff into structured roles within the Telth Care-at-Home and Telehealth networks — with skills upgrading built in.' },
   { icon: '📈', title: 'Upskilling & CPD Pipeline',  body: 'We provide access to NSDC-aligned training, IoMT device training, telehealth coordination and care management certifications to elevate your workforce value.' },
@@ -7,8 +10,9 @@ const cards = [
 
 export default function Employers() {
   return (
-    <section id="employers" className="py-[72px] bg-parchment-2">
-      <div className="max-w-site mx-auto px-6">
+    <section id="employers" className="relative overflow-hidden py-[72px] bg-parchment-2">
+      <img src={caredoctorImg} alt="caredoctorImg" className="absolute inset-0 w-full h-full object-cover opacity-20" />
+      <div className="relative z-10 max-w-site mx-auto px-6">
         <p className="text-brass-dark font-semibold text-[11.5px] tracking-[0.14em] uppercase mb-3 text-center">
           For employment agents &amp; staffing partners
         </p>
