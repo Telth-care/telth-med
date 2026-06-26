@@ -1,5 +1,5 @@
 import { Card, Field, TextInput, DateInput, Select, YesNo, AddAnotherButton } from '../ui/index.jsx'
-import { emptyPreviousInstitution } from '../formConfig.js'
+import { emptyPreviousInstitution, PREVIOUS_INSTITUTION_DEGREES } from '../formConfig.js'
 
 const SchoolIcon = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -17,7 +17,6 @@ const InstitutionIcon = () => (
   </svg>
 )
 
-const DEGREES = ['High School Diploma', "Bachelor's Degree", "Master's Degree", 'Diploma', 'Other']
 const CERTS = ['Higher Secondary Certificate', 'GCE A-Level', 'IB Diploma', 'Other']
 
 export default function Step3Academics({ data, update, updateArrayItem, addArrayItem }) {
@@ -60,12 +59,22 @@ export default function Step3Academics({ data, update, updateArrayItem, addArray
               <div className="flex flex-wrap items-center gap-4">
                 <YesNo value={et[key].taken} onChange={(v) => setTest(key, 'taken')(v)} />
                 {et[key].taken && (
-                  <TextInput
-                    className="max-w-[180px]"
-                    placeholder="Indicate Grade"
-                    value={et[key].grade}
-                    onChange={(e) => setTest(key, 'grade')(e.target.value)}
-                  />
+                  <>
+                    <TextInput
+                      className="max-w-[180px]"
+                      placeholder="Indicate Grade"
+                      value={et[key].grade}
+                      onChange={(e) => setTest(key, 'grade')(e.target.value)}
+                    />
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-[#5A6A7E] whitespace-nowrap">Last Test Date:</span>
+                      <DateInput
+                        className="max-w-[180px]"
+                        value={et[key].date}
+                        onChange={(e) => setTest(key, 'date')(e.target.value)}
+                      />
+                    </div>
+                  </>
                 )}
               </div>
             </Field>
@@ -73,7 +82,7 @@ export default function Step3Academics({ data, update, updateArrayItem, addArray
         </div>
       </Card>
 
-      <Card icon={<InstitutionIcon />} title="Previous Institutions / Colleges / Universities Attended">
+      <Card icon={<InstitutionIcon />} title="Previous Institutions or Colleges (if attended)">
         <div className="space-y-6">
           {prev.map((p, i) => (
             <div key={i} className="grid sm:grid-cols-2 gap-x-6 gap-y-5 pb-6 border-b border-[#0F4C81]/10 last:border-0 last:pb-0">
@@ -89,7 +98,7 @@ export default function Step3Academics({ data, update, updateArrayItem, addArray
               <Field label="Degree earned">
                 <Select value={p.degreeEarned} onChange={(e) => updateArrayItem('academics.previousInstitutions', i, 'degreeEarned', e.target.value)}>
                   <option value="">Select Degree</option>
-                  {DEGREES.map((d) => <option key={d} value={d}>{d}</option>)}
+                  {PREVIOUS_INSTITUTION_DEGREES.map((d) => <option key={d} value={d}>{d}</option>)}
                 </Select>
               </Field>
               <Field label="Dates Attended">

@@ -20,7 +20,14 @@ export const PROGRAM_OPTIONS = [
   "Master's Program",
 ]
 
-export const emptyEmergencyContact = () => ({ fullName: '', phoneNumber: '', relation: '' })
+// "High School Diploma" intentionally excluded — a previous institution/college
+// is post-secondary, so High School Diploma doesn't belong in this dropdown.
+export const PREVIOUS_INSTITUTION_DEGREES = ["Bachelor's Degree", "Master's Degree", 'Diploma', 'Other']
+
+export const emptyEmergencyContact = () => ({
+  fullName: '', phoneNumber: '', relation: '', email: '',
+  addressLine: '', city: '', state: '', pincode: '', country: '',
+})
 
 export const emptyPreviousInstitution = () => ({
   institutionName: '', city: '', stateCountry: '',
@@ -32,7 +39,7 @@ export const getInitialFormData = () => ({
   step1: {
     joiningDate: '', program: '', photoUrl: '',
     firstName: '', lastName: '', middleName: '',
-    passportNumber: '', gender: '', age: '',
+    passportNumber: '', aadharPanNumber: '', gender: '', age: '',
     currentMailingAddress: { street: '', state: '', country: '', postalCode: '' },
     mobilePhone: '', homePhone: '', dateOfBirth: '',
     studentEmail: '', parentEmail: '', cityStateCountryOfBirth: '',
@@ -72,7 +79,10 @@ export const getInitialFormData = () => ({
       highSchoolDiplomaSubmitted: null,
     },
   },
-  agentInformation: { name: '', contactInformation: '' },
+  agentInformation: {
+    name: '', agentNumber: '', contactInformation: '',
+    hearAboutUs: { facebook: false, instagram: false, google: false, others: false, othersSpecify: '' },
+  },
   status: 'draft',
 })
 
@@ -133,7 +143,8 @@ function validateProgram(d) {
   if (!s1.mobilePhone) missing.push('Mobile Phone')
   if (!s1.dateOfBirth) missing.push('Date of Birth')
   if (!s1.studentEmail) missing.push("Student's Email Address")
-  if (!s1.cityStateCountryOfBirth) missing.push('City/State/Country of Birth')
+  if (!s1.parentEmail) missing.push("Parent's Email Address")
+  if (!s1.cityStateCountryOfBirth) missing.push('State & Country of Birth')
   if (!s1.citizenshipStatus) missing.push('Citizenship Status (UK Citizens)')
   if (s1.citizenshipStatus === 'No' && !s1.countryOfCitizenship) missing.push('Country of Citizenship if not UK')
   return missing
@@ -145,6 +156,8 @@ function validateEmergencyContact(d) {
   if (!c.fullName) missing.push('Emergency Contact: Full Name')
   if (!c.phoneNumber) missing.push('Emergency Contact: Phone Number')
   if (!c.relation) missing.push('Emergency Contact: Relation to student')
+  if (!c.email) missing.push('Emergency Contact: Email Address')
+  if (!c.addressLine) missing.push('Emergency Contact: Address (Door No / Street)')
   return missing
 }
 

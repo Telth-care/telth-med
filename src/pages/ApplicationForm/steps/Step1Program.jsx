@@ -21,18 +21,12 @@ const ShieldIcon = () => (
     <path d="M12 2l8 3v6c0 5-3.5 8.5-8 11-4.5-2.5-8-6-8-11V5l8-3z" />
   </svg>
 )
-const ReceiptIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <path d="M6 2h12v20l-3-2-3 2-3-2-3 2V2z" /><path d="M9 7h6M9 11h6" />
-  </svg>
-)
 
 export default function Step1Program({ data, update }) {
   const s1 = data.step1
 
   const set = (field) => (e) => update(`step1.${field}`, e?.target ? e.target.value : e)
   const setAddr = (field) => (e) => update(`step1.currentMailingAddress.${field}`, e.target.value)
-  const setBill = (field) => (e) => update(`step1.billingInformation.${field}`, e.target.value)
 
   return (
     <div className="space-y-6">
@@ -69,29 +63,32 @@ export default function Step1Program({ data, update }) {
           <Field label="Last Name (as in passport)" required><TextInput required placeholder="Enter last name" value={s1.lastName} onChange={set('lastName')} /></Field>
           <Field label="Middle Name"><TextInput placeholder="Enter middle name" value={s1.middleName} onChange={set('middleName')} /></Field>
 
-          <div className="grid sm:grid-cols-3 gap-x-6 gap-y-5 sm:col-span-2">
-            <Field label="Passport Number (IND/INT)Aadhar Card/PAN Number" required>
-              <TextInput required placeholder="Enter Passport or Aadhar number" value={s1.passportNumber} onChange={set('passportNumber')} />
+          <div className="grid sm:grid-cols-2 gap-x-6 gap-y-5 sm:col-span-2">
+            <Field label="Passport Number" required>
+              <TextInput required placeholder="Enter Passport Number (IND/INT)" value={s1.passportNumber} onChange={set('passportNumber')} />
             </Field>
-
-            <Field label="Gender" required>
-              <div className="flex gap-3">
-                {['Male', 'Female', 'Others'].map((g) => (
-                  <button
-                    key={g}
-                    type="button"
-                    onClick={() => update('step1.gender', g)}
-                    className={`px-4 py-2.5 rounded-2xl border text-sm font-medium transition ${
-                      s1.gender === g ? 'bg-[#0F4C81] text-white border-[#0F4C81]' : 'bg-[#F5F8FC] text-[#0D1B2E] border-[#0F4C81]/15'
-                    }`}
-                  >
-                    {g}
-                  </button>
-                ))}
-              </div>
+            <Field label="Aadhar Card / PAN Number" hint="(for Indian Applicants)">
+              <TextInput placeholder="Enter Aadhar Card / PAN Number" value={s1.aadharPanNumber} onChange={set('aadharPanNumber')} />
             </Field>
-            <Field label="Age" required><TextInput required type="number" min="0" placeholder="Enter age" value={s1.age} onChange={set('age')} /></Field>
           </div>
+
+          <Field label="Gender" required>
+            <div className="flex gap-3">
+              {['Male', 'Female', 'Others'].map((g) => (
+                <button
+                  key={g}
+                  type="button"
+                  onClick={() => update('step1.gender', g)}
+                  className={`px-4 py-2.5 rounded-2xl border text-sm font-medium transition ${
+                    s1.gender === g ? 'bg-[#0F4C81] text-white border-[#0F4C81]' : 'bg-[#F5F8FC] text-[#0D1B2E] border-[#0F4C81]/15'
+                  }`}
+                >
+                  {g}
+                </button>
+              ))}
+            </div>
+          </Field>
+          <Field label="Age" required><TextInput required type="number" min="0" placeholder="Enter age" value={s1.age} onChange={set('age')} /></Field>
 
           <Field label="Current Mailing Address (Number and Street)" required>
             <TextInput required placeholder="Enter current address" value={s1.currentMailingAddress.street} onChange={setAddr('street')} />
@@ -107,8 +104,8 @@ export default function Step1Program({ data, update }) {
           <Field label="Date of Birth" required><DateInput required value={s1.dateOfBirth} onChange={set('dateOfBirth')} /></Field>
           <Field label="Student's Email Address" required><TextInput required type="email" placeholder="Enter Student's email address" value={s1.studentEmail} onChange={set('studentEmail')} /></Field>
 
-          <Field label="Parent's Email Address"><TextInput type="email" placeholder="Enter Parent's email address" value={s1.parentEmail} onChange={set('parentEmail')} /></Field>
-          <Field label="City/State/Country of Birth" required><TextInput required placeholder="Enter City/State/Country of birth" value={s1.cityStateCountryOfBirth} onChange={set('cityStateCountryOfBirth')} /></Field>
+          <Field label="Parent's Email Address" required><TextInput required type="email" placeholder="Enter Parent's email address" value={s1.parentEmail} onChange={set('parentEmail')} /></Field>
+          <Field label="State & Country of Birth" required><TextInput required placeholder="Enter State & Country of birth" value={s1.cityStateCountryOfBirth} onChange={set('cityStateCountryOfBirth')} /></Field>
         </div>
       </Card>
 
@@ -118,34 +115,29 @@ export default function Step1Program({ data, update }) {
           <YesNo value={s1.citizenshipStatus === 'Yes' ? true : s1.citizenshipStatus === 'No' ? false : null} onChange={(v) => update('step1.citizenshipStatus', v ? 'Yes' : 'No')} />
         </Field>
 
-        <p className="text-sm text-[#0D1B2E] mt-6 mb-3">Fill the below details</p>
-        <div className="grid sm:grid-cols-2 gap-x-6 gap-y-5">
-          <Field label="Permanent Resident" className="sm:col-span-2">
-            <TextInput placeholder="Enter permanent resident address" value={s1.permanentResident} onChange={set('permanentResident')} />
-          </Field>
-          <Field label="Alien Reg."><TextInput placeholder="Enter Alien Reg" value={s1.alienRegistration} onChange={set('alienRegistration')} /></Field>
-          <Field label="Visa Type"><TextInput placeholder="Select visa type" value={s1.visaType} onChange={set('visaType')} /></Field>
-          {s1.citizenshipStatus === 'No' && (
+        {s1.citizenshipStatus === 'Yes' && (
+          <>
+            <p className="text-sm text-[#0D1B2E] mt-6 mb-3">Fill the below details</p>
+            <div className="grid sm:grid-cols-2 gap-x-6 gap-y-5">
+              <Field label="Permanent Resident" className="sm:col-span-2">
+                <TextInput placeholder="Enter permanent resident address" value={s1.permanentResident} onChange={set('permanentResident')} />
+              </Field>
+              <Field label="Alien Reg."><TextInput placeholder="Enter Alien Reg" value={s1.alienRegistration} onChange={set('alienRegistration')} /></Field>
+              <Field label="Visa Type"><TextInput placeholder="Select visa type" value={s1.visaType} onChange={set('visaType')} /></Field>
+              <Field label="Previous Date of UK Entry">
+                <DateInput value={s1.ukEntryDate} onChange={set('ukEntryDate')} />
+              </Field>
+            </div>
+          </>
+        )}
+
+        {s1.citizenshipStatus === 'No' && (
+          <div className="grid sm:grid-cols-2 gap-x-6 gap-y-5 mt-6">
             <Field label="Country of Citizenship if not UK" required>
               <TextInput required placeholder="Select Country" value={s1.countryOfCitizenship} onChange={set('countryOfCitizenship')} />
             </Field>
-          )}
-          <Field label="Date of UK Entry"><DateInput value={s1.ukEntryDate} onChange={set('ukEntryDate')} /></Field>
-        </div>
-      </Card>
-
-      {/* Billing */}
-      <Card icon={<ReceiptIcon />} title="To Whom Should The Bill Be Sent">
-        <div className="grid sm:grid-cols-2 gap-x-6 gap-y-5">
-          <Field label="First Name"><TextInput placeholder="Enter first name" value={s1.billingInformation.firstName} onChange={setBill('firstName')} /></Field>
-          <Field label="Last Name"><TextInput placeholder="Enter last name" value={s1.billingInformation.lastName} onChange={setBill('lastName')} /></Field>
-          <Field label="Middle Name"><TextInput placeholder="Enter middle name" value={s1.billingInformation.middleName} onChange={setBill('middleName')} /></Field>
-          <Field label="Mailing Address (Number and Street)">
-            <TextInput placeholder="Enter address" value={s1.billingInformation.address} onChange={setBill('address')} />
-          </Field>
-          <Field label="City"><TextInput placeholder="Enter City" value={s1.billingInformation.city} onChange={setBill('city')} /></Field>
-          <Field label="State/Province"><TextInput placeholder="Enter State/Province" value={s1.billingInformation.state} onChange={setBill('state')} /></Field>
-        </div>
+          </div>
+        )}
       </Card>
     </div>
   )

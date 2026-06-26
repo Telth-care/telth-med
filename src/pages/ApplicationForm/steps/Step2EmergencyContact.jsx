@@ -11,20 +11,42 @@ export default function Step2EmergencyContact({ data, updateArrayItem }) {
 
   return (
     <Card icon={<ContactIcon />} title="Emergency Contact">
-      <div className="space-y-6">
-        {contacts.map((c, i) => (
-          <div key={i} className="grid sm:grid-cols-3 gap-x-6 gap-y-5">
-            <Field label="Full Name" required>
-              <TextInput required placeholder="Enter Full name" value={c.fullName} onChange={(e) => updateArrayItem('emergencyContacts', i, 'fullName', e.target.value)} />
-            </Field>
-            <Field label="Phone number" required>
-              <TextInput required type="tel" placeholder="Enter Phone Number" value={c.phoneNumber} onChange={(e) => updateArrayItem('emergencyContacts', i, 'phoneNumber', e.target.value)} />
-            </Field>
-            <Field label="Relation to student" required>
-              <TextInput required placeholder="Enter Relation" value={c.relation} onChange={(e) => updateArrayItem('emergencyContacts', i, 'relation', e.target.value)} />
-            </Field>
-          </div>
-        ))}
+      <div className="space-y-8">
+        {contacts.map((c, i) => {
+          const set = (field) => (e) => updateArrayItem('emergencyContacts', i, field, e.target.value)
+          return (
+            <div key={i} className="space-y-5">
+              <div className="grid sm:grid-cols-3 gap-x-6 gap-y-5">
+                <Field label="Full Name" required>
+                  <TextInput required placeholder="Enter Full name" value={c.fullName} onChange={set('fullName')} />
+                </Field>
+                <Field label="Phone number" required>
+                  <TextInput required type="tel" placeholder="Enter Phone Number" value={c.phoneNumber} onChange={set('phoneNumber')} />
+                </Field>
+                <Field label="Relation to student" required>
+                  <TextInput required placeholder="Enter Relation" value={c.relation} onChange={set('relation')} />
+                </Field>
+              </div>
+
+              <div className="grid sm:grid-cols-2 gap-x-6 gap-y-5">
+                <Field label="Email Address" required>
+                  <TextInput required type="email" placeholder="Enter Email Address" value={c.email} onChange={set('email')} />
+                </Field>
+              </div>
+
+              <p className="text-sm font-semibold text-[#0D1B2E] pt-1">Address</p>
+              <div className="grid sm:grid-cols-2 gap-x-6 gap-y-5">
+                <Field label="Door No / Street" className="sm:col-span-2" required>
+                  <TextInput required placeholder="Enter Door No / Street" value={c.addressLine} onChange={set('addressLine')} />
+                </Field>
+                <Field label="City"><TextInput placeholder="Enter City" value={c.city} onChange={set('city')} /></Field>
+                <Field label="State"><TextInput placeholder="Enter State" value={c.state} onChange={set('state')} /></Field>
+                <Field label="Pincode"><TextInput placeholder="Enter Pincode" value={c.pincode} onChange={set('pincode')} /></Field>
+                <Field label="Country"><TextInput placeholder="Enter Country" value={c.country} onChange={set('country')} /></Field>
+              </div>
+            </div>
+          )
+        })}
       </div>
     </Card>
   )
