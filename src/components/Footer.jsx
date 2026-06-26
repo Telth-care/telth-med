@@ -19,7 +19,23 @@ export default function Footer() {
         </nav>
       </div>
       <div className="max-w-site mx-auto px-6 py-5 text-[0.74rem] text-parchment/40">
-        <p className="m-0 mb-1">📞 +91 7834935011 &nbsp;|&nbsp; ✉️  greenkeyistudios@gmail.com &nbsp;|&nbsp; 🌐 https://www.medpassedu.org/</p>
+        <p className="m-0 mb-2 text-parchment/55">
+          Centurion House, London Road, Staines upon Thames, United Kingdom – TW1B 4AX
+        </p>
+        <p className="m-0 mb-1 text-parchment/55">
+          Info line:{' '}
+          <a href="tel:+447554469843" className="hover:text-parchment transition-colors">+44 7554 469843</a>
+          {' · '}
+          <a href="tel:+12345644564" className="hover:text-parchment transition-colors">+1 234 564 4564</a>
+          {' · '}
+          Email:{' '}
+          <a href="mailto:admin@harleyhealth.com" className="hover:text-parchment transition-colors">admin@harleyhealth.com</a>
+        </p>
+        <p className="m-0 mb-2 text-parchment/55">
+          <a href="https://harleyhealthsystem.com/" target="_blank" rel="noopener noreferrer" className="hover:text-parchment transition-colors">harleyhealthsystem.com</a>
+          {' · '}
+          <a href="https://www.medpassedu.org/" target="_blank" rel="noopener noreferrer" className="hover:text-parchment transition-colors">medpassedu.org</a>
+        </p>
         <p className="m-0">© {new Date().getFullYear()} Telth &amp; Harley Health System. For informational purposes only — not an offer, admission, employment contract or guarantee of any outcome.</p>
       </div>
     </footer>
