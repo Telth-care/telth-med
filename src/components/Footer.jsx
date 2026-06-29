@@ -20,7 +20,7 @@ export default function Footer() {
       </div>
       <div className="max-w-site mx-auto px-6 py-5 text-[0.74rem] text-parchment/40">
         <p className="m-0 mb-2 text-parchment/55">
-          Centurion House, London Road, Staines upon Thames, United Kingdom – TW1B 4AX
+          Centurion House, London Road, Staines upon Thames, United Kingdom – TW18 4AX
         </p>
         <p className="m-0 mb-1 text-parchment/55">
           Info line:{' '}
