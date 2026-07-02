@@ -108,7 +108,7 @@ export default function Step3Academics({ data, update, updateArrayItem, addArray
                 </div>
               </Field>
               <Field label="Credits earned">
-                <TextInput type="number" placeholder="Enter credits" value={p.creditsEarned} onChange={(e) => updateArrayItem('academics.previousInstitutions', i, 'creditsEarned', e.target.value)} />
+                <TextInput type="number" min="0" max="999" placeholder="Enter credits" value={p.creditsEarned} onChange={(e) => updateArrayItem('academics.previousInstitutions', i, 'creditsEarned', e.target.value)} />
               </Field>
               <Field label="Major" className="sm:col-span-2">
                 <TextInput placeholder="Enter Major" value={p.major} onChange={(e) => updateArrayItem('academics.previousInstitutions', i, 'major', e.target.value)} />

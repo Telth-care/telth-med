@@ -21,7 +21,16 @@ export default function Step2EmergencyContact({ data, updateArrayItem }) {
                   <TextInput required placeholder="Enter Full name" value={c.fullName} onChange={set('fullName')} />
                 </Field>
                 <Field label="Phone number" required>
-                  <TextInput required type="tel" placeholder="Enter Phone Number" value={c.phoneNumber} onChange={set('phoneNumber')} />
+                  <TextInput
+                    required
+                    type="tel"
+                    inputMode="tel"
+                    pattern="[0-9+\-\s()]{7,15}"
+                    title="Enter a valid phone number (7-15 digits)"
+                    placeholder="Enter Phone Number"
+                    value={c.phoneNumber}
+                    onChange={set('phoneNumber')}
+                  />
                 </Field>
                 <Field label="Relation to student" required>
                   <TextInput required placeholder="Enter Relation" value={c.relation} onChange={set('relation')} />
@@ -30,7 +39,14 @@ export default function Step2EmergencyContact({ data, updateArrayItem }) {
 
               <div className="grid sm:grid-cols-2 gap-x-6 gap-y-5">
                 <Field label="Email Address" required>
-                  <TextInput required type="email" placeholder="Enter Email Address" value={c.email} onChange={set('email')} />
+                  <TextInput
+                    required
+                    type="email"
+                    placeholder="Enter Email Address"
+                    title="Enter a valid email address"
+                    value={c.email}
+                    onChange={set('email')}
+                  />
                 </Field>
               </div>
 
@@ -41,7 +57,18 @@ export default function Step2EmergencyContact({ data, updateArrayItem }) {
                 </Field>
                 <Field label="City"><TextInput placeholder="Enter City" value={c.city} onChange={set('city')} /></Field>
                 <Field label="State"><TextInput placeholder="Enter State" value={c.state} onChange={set('state')} /></Field>
-                <Field label="Pincode"><TextInput placeholder="Enter Pincode" value={c.pincode} onChange={set('pincode')} /></Field>
+                <Field label="Pincode">
+                  <TextInput
+                    type="text"
+                    inputMode="numeric"
+                    pattern="[0-9]{4,10}"
+                    maxLength={10}
+                    title="Enter a valid pincode (digits only)"
+                    placeholder="Enter Pincode"
+                    value={c.pincode}
+                    onChange={set('pincode')}
+                  />
+                </Field>
                 <Field label="Country"><TextInput placeholder="Enter Country" value={c.country} onChange={set('country')} /></Field>
               </div>
             </div>

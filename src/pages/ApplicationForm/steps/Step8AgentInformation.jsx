@@ -18,6 +18,7 @@ export default function Step8AgentInformation({ data, update }) {
   const h = a.hearAboutUs
 
   return (
+    <>
     <Card icon={<AgentIcon />} title="Agent Information">
       <p className="text-sm text-[#0D1B2E] mb-5">
         Please indicate the details of the individual or company that counseled you.
@@ -30,7 +31,13 @@ export default function Step8AgentInformation({ data, update }) {
           <TextInput placeholder="Enter agent ID / number" value={a.agentNumber} onChange={(e) => update('agentInformation.agentNumber', e.target.value)} />
         </Field>
         <Field label="Contact Email Address" className="sm:col-span-2">
-          <TextInput type="email" placeholder="Enter agent's email address" value={a.contactInformation} onChange={(e) => update('agentInformation.contactInformation', e.target.value)} />
+          <TextInput
+            type="email"
+            title="Enter a valid email address"
+            placeholder="Enter agent's email address"
+            value={a.contactInformation}
+            onChange={(e) => update('agentInformation.contactInformation', e.target.value)}
+          />
         </Field>
       </div>
 
@@ -65,5 +72,6 @@ export default function Step8AgentInformation({ data, update }) {
         )}
       </div>
     </Card>
+    </>
   )
 }

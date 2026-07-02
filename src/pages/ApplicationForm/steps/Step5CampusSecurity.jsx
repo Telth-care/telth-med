@@ -1,4 +1,4 @@
-import { Card, Field, YesNo, Textarea } from '../ui/index.jsx'
+import { Card, Field, YesNo, PillUpload } from '../ui/index.jsx'
 
 const ShieldIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -27,12 +27,15 @@ export default function Step5CampusSecurity({ data, update }) {
 
         {needsExplanation && (
           <Field label="Letter of Explanation" required>
-            <Textarea
-              rows={4}
-              placeholder="Please provide your letter of explanation"
-              value={cs.explanationLetter}
-              onChange={(e) => update('campusSecurity.explanationLetter', e.target.value)}
+            <PillUpload
+              label="Upload Letter of Explanation"
+              accept=".pdf"
+              sublabel="PDF only"
+              onFile={(file) => update('campusSecurity.explanationLetter', file)}
             />
+            {cs.explanationLetter && (
+              <p className="text-xs text-[#0F4C81] mt-2 text-center">Selected: {cs.explanationLetter.name}</p>
+            )}
           </Field>
         )}
       </div>

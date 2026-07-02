@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import ApplicationHero from './ApplicationHero.jsx'
 import StepperBar from './StepperBar.jsx'
 import FormFooterNav from './FormFooterNav.jsx'
+import { Card, CalendlyInlineWidget } from './ui/index.jsx'
 
 import StepRequirement from './steps/StepRequirement.jsx'
 import Step1Program from './steps/Step1Program.jsx'
@@ -18,6 +19,7 @@ import Step8AgentInformation from './steps/Step8AgentInformation.jsx'
 import { STEP_META, STEP_VALIDATORS, getInitialFormData, setPath } from './formConfig.js'
 
 const API_URL = 'https://api.medpassedu.org/api/applications'
+const CALENDLY_CREATE_LINK_URL = 'https://api.medpassed.org/api/calendly/create-link'
 const TOTAL_STEPS = STEP_META.length
 
 // Flattens the nested formData object into a FormData instance so File objects
@@ -54,6 +56,10 @@ export default function ApplicationForm() {
   const [formData, setFormData] = useState(getInitialFormData)
   const [saving, setSaving] = useState(false)
   const [notice, setNotice] = useState(null) // { type: 'success' | 'error', text }
+  // Post-submit Calendly booking step: null = not there yet, 'loading' | 'ready' | 'error'
+  const [booking, setBooking] = useState({ stage: null, url: '', error: '' })
+  // null = not answered, true = spoke to agent (skip Calendly), false = didn't speak (show Calendly)
+  const [spokeToAgent, setSpokeToAgent] = useState(null)
 
   // ── generic state updaters, shared with every step (this is what keeps data
   //    intact when the user clicks Back/Continue — the data lives here, not
@@ -132,19 +138,58 @@ export default function ApplicationForm() {
 
       if (!res.ok) throw new Error(`Server responded with ${res.status}`)
 
+      const json = await res.json().catch(() => null)
+
       if (resetOnSuccess) {
-        setFormData(getInitialFormData())
-        setCurrentStep(1)
-        setNotice({ type: 'success', text: 'Application submitted successfully. The form has been reset for a new entry.' })
+        const applicationId = json?.data?._id
+        setNotice({ type: 'success', text: 'Application submitted successfully.' })
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+        if (applicationId) {
+          await fetchBookingLink(applicationId)
+        } else {
+          // Submitted fine, but no id came back to build a booking link with —
+          // don't block the user, just skip straight to a fresh form.
+          setFormData(getInitialFormData())
+          setCurrentStep(1)
+        }
       } else {
         setNotice({ type: 'success', text: 'Draft saved successfully.' })
+        window.scrollTo({ top: 0, behavior: 'smooth' })
       }
-      window.scrollTo({ top: 0, behavior: 'smooth' })
     } catch (err) {
       setNotice({ type: 'error', text: `Could not reach the server (${API_URL}). ${err.message}` })
     } finally {
       setSaving(false)
     }
+  }
+
+  // Called right after a successful submit — exchanges the new applicationId
+  // for a Calendly scheduling link, then shows it inline so the applicant can
+  // book their review call before leaving the page.
+  async function fetchBookingLink(applicationId) {
+    setBooking({ stage: 'loading', url: '', error: '' })
+    try {
+      const res = await fetch(CALENDLY_CREATE_LINK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ applicationId }),
+      })
+      if (!res.ok) throw new Error(`Server responded with ${res.status}`)
+      const data = await res.json()
+      if (!data?.bookingUrl) throw new Error('No booking link was returned')
+      setBooking({ stage: 'ready', url: data.bookingUrl, error: '' })
+    } catch (err) {
+      setBooking({ stage: 'error', url: '', error: err.message })
+    }
+  }
+
+  function startNewApplication() {
+    setFormData(getInitialFormData())
+    setCurrentStep(1)
+    setBooking({ stage: null, url: '', error: '' })
+    setSpokeToAgent(null)
+    setNotice(null)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   return (
@@ -163,19 +208,107 @@ export default function ApplicationForm() {
           </div>
         )}
 
-        <ActiveStep {...stepProps} />
+        {booking.stage ? (
+          <Card title="Book Your Appointment">
+            {booking.stage === 'loading' && (
+              <p className="text-sm text-[#5A6A7E]">Setting up your scheduling link, one moment…</p>
+            )}
+
+            {(booking.stage === 'ready' || booking.stage === 'error') && (
+              <>
+                {/* Step 1: Ask if they already spoke to an agent */}
+                {spokeToAgent === null && (
+                  <div>
+                    <p className="text-sm font-semibold text-[#0D1B2E] mb-4">
+                      Your application has been submitted successfully. Before booking, please confirm:
+                    </p>
+                    <div className="flex flex-col gap-3">
+                      <label className="flex items-start gap-3 cursor-pointer p-3.5 rounded-2xl ring-1 ring-[#0F4C81]/15 hover:ring-[#0F4C81]/30 transition">
+                        <input
+                          type="checkbox"
+                          checked={false}
+                          onChange={() => setSpokeToAgent(true)}
+                          className="mt-0.5 w-5 h-5 rounded border-[#0F4C81] text-[#0F4C81] focus:ring-[#0F4C81] flex-shrink-0"
+                        />
+                        <div>
+                          <p className="text-sm font-semibold text-[#0D1B2E]">Yes, I have already spoken to an agent</p>
+                          <p className="text-xs text-[#5A6A7E] mt-0.5">No need to book a Calendly call — your agent will guide you further.</p>
+                        </div>
+                      </label>
+                      <label className="flex items-start gap-3 cursor-pointer p-3.5 rounded-2xl ring-1 ring-[#0F4C81]/15 hover:ring-[#0F4C81]/30 transition">
+                        <input
+                          type="checkbox"
+                          checked={false}
+                          onChange={() => setSpokeToAgent(false)}
+                          className="mt-0.5 w-5 h-5 rounded border-[#0F4C81] text-[#0F4C81] focus:ring-[#0F4C81] flex-shrink-0"
+                        />
+                        <div>
+                          <p className="text-sm font-semibold text-[#0D1B2E]">No, I have not spoken to an agent yet</p>
+                          <p className="text-xs text-[#5A6A7E] mt-0.5">Please book a slot below to schedule your application review call.</p>
+                        </div>
+                      </label>
+                    </div>
+                  </div>
+                )}
+
+                {/* Already spoke to agent → skip Calendly, show done screen */}
+                {spokeToAgent === true && (
+                  <div>
+                    <div className="flex items-center gap-3 mb-3">
+                      <span className="w-9 h-9 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2.5"><path d="M20 6L9 17l-5-5" /></svg>
+                      </span>
+                      <p className="text-sm font-semibold text-green-700">Application submitted — your agent will guide you on next steps.</p>
+                    </div>
+                    <button type="button" onClick={startNewApplication} className="mt-4 px-5 py-2.5 rounded-2xl bg-[#0F4C81] text-white text-sm font-medium">
+                      Start New Application
+                    </button>
+                  </div>
+                )}
+
+                {/* Did not speak to agent → show Calendly */}
+                {spokeToAgent === false && booking.stage === 'error' && (
+                  <div>
+                    <p className="text-sm text-red-700 mb-4">
+                      Your application was submitted, but we couldn't set up the booking link ({booking.error}). You can pick a slot later from your confirmation email.
+                    </p>
+                    <button type="button" onClick={startNewApplication} className="px-5 py-2.5 rounded-2xl bg-[#0F4C81] text-white text-sm font-medium">
+                      Start New Application
+                    </button>
+                  </div>
+                )}
+
+                {spokeToAgent === false && booking.stage === 'ready' && (
+                  <>
+                    <p className="text-sm text-[#0D1B2E] mb-4">
+                      Please pick a slot below to schedule your application review call.
+                    </p>
+                    <CalendlyInlineWidget url={booking.url} />
+                    <button type="button" onClick={startNewApplication} className="mt-5 px-5 py-2.5 rounded-2xl bg-[#0F4C81] text-white text-sm font-medium">
+                      Start New Application
+                    </button>
+                  </>
+                )}
+              </>
+            )}
+          </Card>
+        ) : (
+          <ActiveStep {...stepProps} />
+        )}
       </div>
 
-      <div className="mt-6">
-        <FormFooterNav
-          onBack={goBack}
-          onSaveDraft={saveDraft}
-          onNext={goNext}
-          isFirst={currentStep === 2}
-          isLast={currentStep === TOTAL_STEPS}
-          saving={saving}
-        />
-      </div>
+      {!booking.stage && (
+        <div className="mt-6">
+          <FormFooterNav
+            onBack={goBack}
+            onSaveDraft={saveDraft}
+            onNext={goNext}
+            isFirst={currentStep === 1}
+            isLast={currentStep === TOTAL_STEPS}
+            saving={saving}
+          />
+        </div>
+      )}
     </div>
   )
 }

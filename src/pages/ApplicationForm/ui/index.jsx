@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 const inputCls =
   'w-full bg-[#F5F8FC] border border-[#0F4C81]/15 rounded-2xl px-3.5 py-2.5 text-sm text-[#0D1B2E] placeholder-[#9AAFC4] outline-none focus:ring-2 focus:ring-[#0F4C81]/25 focus:border-[#0F4C81]/40 transition'
@@ -71,6 +71,9 @@ export function Select({ children, className = '', ...props }) {
 export function PillUpload({ label, sublabel, accept = '.png,.jpg,.jpeg', onFile }) {
   const [error, setError] = useState('')
 
+  // Derive badge labels from accept string e.g. ".pdf,.png" → ['PDF','PNG']
+  const badges = accept.split(',').map((s) => s.replace('.', '').toUpperCase())
+
   const handleChange = (e) => {
     const file = e.target.files?.[0] || null
     if (isFileTooLarge(file)) {
@@ -96,7 +99,7 @@ export function PillUpload({ label, sublabel, accept = '.png,.jpg,.jpeg', onFile
         <span className="text-sm font-semibold text-[#0D1B2E]">{label}</span>
         <span className="text-xs text-[#5A6A7E]">{sublabel || 'Drag and drop or click to browse'}</span>
         <span className="flex gap-2 pt-1">
-          {['PNG', 'JPG', 'JPEG'].map((t) => (
+          {badges.map((t) => (
             <span key={t} className="px-2 py-0.5 rounded bg-[#E8EFF7] text-[#0F4C81] text-[10px] font-semibold">{t}</span>
           ))}
         </span>
@@ -173,6 +176,154 @@ export function AddAnotherButton({ label = 'Add another', onClick }) {
     >
       <span className="text-lg leading-none">+</span> {label}
     </button>
+  )
+}
+
+// ── Calendly inline embed widget ──
+// Loads Calendly's widget.js once, renders the inline scheduler for `url`,
+// and reports back via onScheduled(eventUri, inviteeUri) when the visitor
+// actually books a slot (Calendly fires a postMessage, not a normal DOM event).
+export function CalendlyInlineWidget({ url, onScheduled, height = 700 }) {
+  const containerRef = (el) => {
+    if (!el || el.dataset.calendlyInit) return
+    el.dataset.calendlyInit = '1'
+
+    const init = () => {
+      if (window.Calendly) {
+        window.Calendly.initInlineWidget({ url, parentElement: el, prefill: {}, utm: {} })
+      }
+    }
+
+    if (window.Calendly) {
+      init()
+    } else if (!document.getElementById('calendly-widget-script')) {
+      const script = document.createElement('script')
+      script.id = 'calendly-widget-script'
+      script.src = 'https://assets.calendly.com/assets/external/widget.js'
+      script.async = true
+      script.onload = init
+      document.body.appendChild(script)
+    } else {
+      document.getElementById('calendly-widget-script').addEventListener('load', init)
+    }
+  }
+
+  useEffect(() => {
+    const handler = (e) => {
+      if (e.data?.event === 'calendly.event_scheduled') {
+        const eventUri = e.data.payload?.event?.uri || ''
+        const inviteeUri = e.data.payload?.invitee?.uri || ''
+        onScheduled?.(eventUri, inviteeUri)
+      }
+    }
+    window.addEventListener('message', handler)
+    return () => window.removeEventListener('message', handler)
+  })
+
+  return (
+    <div
+      ref={containerRef}
+      style={{ minWidth: '320px', height: `${height}px` }}
+      className="rounded-2xl overflow-hidden ring-1 ring-[#0F4C81]/15"
+    />
+  )
+}
+
+// ── Single country dropdown ──
+export function CountrySelect({ value, onChange, placeholder = 'Select Country', required, countries = [] }) {
+  return (
+    <Select value={value} onChange={onChange} required={required}>
+      <option value="">{placeholder}</option>
+      {countries.map((c) => <option key={c} value={c}>{c}</option>)}
+    </Select>
+  )
+}
+
+// ── Multi-country select ──
+// Stores selection as a comma-separated string (e.g. "India, Nigeria")
+// so payload shape stays a plain string, exactly as the backend expects.
+export function MultiCountrySelect({ value = '', onChange, countries = [] }) {
+  const [open, setOpen] = useState(false)
+  const [search, setSearch] = useState('')
+
+  // Parse current string value → array
+  const selected = value ? value.split(',').map((s) => s.trim()).filter(Boolean) : []
+
+  const toggle = (country) => {
+    const next = selected.includes(country)
+      ? selected.filter((c) => c !== country)
+      : [...selected, country]
+    onChange(next.join(', '))
+    setSearch('')
+  }
+
+  const remove = (country) => {
+    const next = selected.filter((c) => c !== country)
+    onChange(next.join(', '))
+  }
+
+  const filtered = countries.filter(
+    (c) => c.toLowerCase().includes(search.toLowerCase()) && !selected.includes(c)
+  )
+
+  return (
+    <div className="relative">
+      {/* Tag pills + search input */}
+      <div
+        onClick={() => setOpen(true)}
+        className={`min-h-[44px] w-full bg-[#F5F8FC] border rounded-2xl px-3 py-2 flex flex-wrap gap-1.5 cursor-text transition ${
+          open ? 'border-[#0F4C81]/40 ring-2 ring-[#0F4C81]/20' : 'border-[#0F4C81]/15'
+        }`}
+      >
+        {selected.map((c) => (
+          <span key={c} className="flex items-center gap-1 px-2 py-0.5 bg-[#0F4C81] text-white text-xs font-medium rounded-lg">
+            {c}
+            <button
+              type="button"
+              onClick={(e) => { e.stopPropagation(); remove(c) }}
+              className="hover:text-red-300 leading-none ml-0.5"
+            >×</button>
+          </span>
+        ))}
+        <input
+          value={search}
+          onChange={(e) => { setSearch(e.target.value); setOpen(true) }}
+          onFocus={() => setOpen(true)}
+          placeholder={selected.length === 0 ? 'Search and select countries…' : ''}
+          className="flex-1 min-w-[120px] bg-transparent text-sm text-[#0D1B2E] placeholder-[#9AAFC4] outline-none py-0.5"
+        />
+      </div>
+
+      {/* Dropdown list */}
+      {open && (
+        <>
+          {/* Click-outside overlay */}
+          <div className="fixed inset-0 z-10" onClick={() => setOpen(false)} />
+          <div className="absolute z-20 mt-1 w-full bg-white rounded-2xl shadow-lg ring-1 ring-[#0F4C81]/15 max-h-56 overflow-y-auto">
+            {filtered.length === 0 ? (
+              <p className="text-xs text-[#9AAFC4] px-4 py-3">No countries found</p>
+            ) : (
+              filtered.map((c) => (
+                <button
+                  key={c}
+                  type="button"
+                  onClick={() => toggle(c)}
+                  className="w-full text-left text-sm px-4 py-2.5 hover:bg-[#F5F8FC] text-[#0D1B2E] transition"
+                >
+                  {c}
+                </button>
+              ))
+            )}
+          </div>
+        </>
+      )}
+
+      {selected.length > 0 && (
+        <p className="text-[10px] text-[#9AAFC4] mt-1 ml-1">
+          {selected.length} countr{selected.length === 1 ? 'y' : 'ies'} selected
+        </p>
+      )}
+    </div>
   )
 }
 
