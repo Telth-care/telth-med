@@ -158,6 +158,7 @@ const SECTIONS = [
       'Personal Statement (typed and double-spaced)',
       'Certified / Notarized copies of transcripts & Undergraduate Degree (in English)',
       'Certified copies of High School Diploma (in English)',
+      'US$5,000.00 non-refundable Admission Enrollment & Program Registration fee(20% Advance Payment)',
     ],
     optional: [],
   },

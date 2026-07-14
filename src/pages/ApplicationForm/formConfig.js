@@ -46,8 +46,8 @@ export const STEP_META = [
 // CM (Care Manager) has no programs; CCM and Physician do.
 export const APPLICATION_ROLE_OPTIONS = [
   { value: 'cm', label: 'Care Manager (CM)' },
-  { value: 'ccm', label: 'Collaborative Care Manager (CCM)' },
-  { value: 'physician', label: 'Physician' },
+  // { value: 'ccm', label: 'Collaborative Care Manager (CCM)' },
+  // { value: 'physician', label: 'Physician' },
 ]
 
 export const PROGRAM_OPTIONS = [
@@ -122,6 +122,7 @@ export const getInitialFormData = () => ({
     healthCertificate: false, policeClearanceCertificate: false, recommendationLetters: false,
     personalStatementSubmitted: false, transcriptsSubmitted: false,
     highSchoolDiplomaSubmitted: false, documentsConfirmed: false,
+    feesDetails: false,
     // File slots used by Step7Checklist (FileChecklistRow / MultiFileChecklistRow).
     // Without this, cl.files[key] crashes the Documents step on load.
     files: {
@@ -131,6 +132,7 @@ export const getInitialFormData = () => ({
       personalStatementSubmitted: null,
       transcriptsSubmitted: null,
       highSchoolDiplomaSubmitted: null,
+      feesDetails: null,
     },
   },
   agentInformation: {
@@ -187,6 +189,7 @@ const CHECKLIST_LABELS = {
   personalStatementSubmitted: 'Personal Statement (typed and double spaced)',
   transcriptsSubmitted: 'Certified or Notarized copies of transcripts & Degree',
   highSchoolDiplomaSubmitted: 'Certified copies of High School Diploma in English',
+  feesDetails: 'US$5,000.00 non-refundable Admission Enrollment & Program Registration fee(20% Advance Payment)',
 }
 
 function hasFile(val) {
