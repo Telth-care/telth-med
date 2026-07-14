@@ -43,7 +43,7 @@ export default function ApplicationHero() {
         </div>
 
         <h1 className="text-2xl sm:text-[30px] font-bold leading-tight max-w-2xl">
-          Application for Collaborative Care Managers Admission
+          Application for Care Managers Admission
         </h1>
         <p className="text-white/70 text-sm mt-3">
           Global Employment Mobility &amp; Healthcare Workforce Development Program
