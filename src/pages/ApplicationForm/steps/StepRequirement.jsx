@@ -20,7 +20,7 @@ const CheckCircle = () => (
 )
 
 const StarIcon = () => (
-  <svg width="13" height="13" viewBox="0 0 24 24" fill="#EF4444" stroke="none">
+  <svg width="13" height="13" viewBox="0 0 24 14" fill="#EF4444" stroke="none">
     <circle cx="12" cy="12" r="5" />
   </svg>
 )
@@ -38,7 +38,7 @@ const SECTIONS = [
       </svg>
     ),
     mandatory: [
-      'Joining date (Sep / Jan / May intake)',
+      'Joining month (Sep / Jan / May intake)',
       'Program selection',
       'Recent passport-size photo (upload)',
       'First Name & Last Name (as in passport)',
@@ -158,7 +158,7 @@ const SECTIONS = [
       'Personal Statement (typed and double-spaced)',
       'Certified / Notarized copies of transcripts & Undergraduate Degree (in English)',
       'Certified copies of High School Diploma (in English)',
-      'US$5,000.00 non-refundable Admission Enrollment & Program Registration fee(20% Advance Payment)',
+      '£ 5,000.00 Global Employment Mobility Program Assessment, Registration, Training & Qualification (20% Advance Payment)',
     ],
     optional: [],
   },

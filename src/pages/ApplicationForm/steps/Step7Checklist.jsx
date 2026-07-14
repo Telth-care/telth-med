@@ -14,7 +14,7 @@ const ITEMS = [
   ['personalStatementSubmitted', 'Personal Statement (typed and double spaced)'],
   ['transcriptsSubmitted', 'Certified or Notarized copies of transcripts & Degree of your Undergraduate studies in English'],
   ['highSchoolDiplomaSubmitted', 'Certified copies of High School Diploma in English'],
-  ['feesDetails', 'US$5,000.00 non-refundable Admission Enrollment & Program Registration fee(20% Advance Payment)'],
+  ['feesDetails', '£ 5,000.00 Global Employment Mobility Program Assessment, Registration, Training & Qualification (20% Advance Payment)'],
 ]
 
 export default function Step7Checklist({ data, update }) {
