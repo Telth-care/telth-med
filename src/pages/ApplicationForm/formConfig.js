@@ -45,9 +45,9 @@ export const STEP_META = [
 // Application role — drives whether the "Choose the program" section appears at all.
 // CM (Care Manager) has no programs; CCM and Physician do.
 export const APPLICATION_ROLE_OPTIONS = [
-  { value: 'cm', label: 'Care Manager (CM)' },
-  // { value: 'ccm', label: 'Collaborative Care Manager (CCM)' },
-  // { value: 'physician', label: 'Physician' },
+  { value: 'cm', label: 'Care Manager (CM)', role: 'cm' },
+  { value: 'ccm', label: 'Collaborative Care Manager (CCM)', role: 'ccm' },
+  { value: 'physician', label: 'Physician', role: 'physician' },
 ]
 
 export const PROGRAM_OPTIONS = [
