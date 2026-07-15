@@ -189,7 +189,7 @@ const CHECKLIST_LABELS = {
   personalStatementSubmitted: 'Personal Statement (typed and double spaced)',
   transcriptsSubmitted: 'Certified or Notarized copies of transcripts & Degree',
   highSchoolDiplomaSubmitted: 'Certified copies of High School Diploma in English',
-  feesDetails: '£ 5,000.00 non-refundable Admission Enrollment & Program Registration fee(20% Advance Payment)',
+  feesDetails: '£ 5,000.00 non-refundable Admission Enrollment & Program Registration fee',
 }
 
 function hasFile(val) {
