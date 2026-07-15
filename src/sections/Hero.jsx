@@ -42,7 +42,7 @@ export default function Hero() {
             education and a transparent pathway toward healthcare leadership and
             ownership.
           </p>
-          <div className="flex items-center gap-5 mb-5 flex-wrap">
+          {/* <div className="flex items-center gap-5 mb-5 flex-wrap">
             <Link
               to="/application-form"
               className="bg-parchment text-ink font-semibold text-sm px-5 py-3 rounded hover:bg-brass-dark hover:text-parchment hover:-translate-y-px hover:shadow-lg transition-all duration-200"
@@ -55,7 +55,7 @@ export default function Hero() {
             >
               View pathways →
             </a>
-          </div>
+          </div> */}
           <div className="flex gap-2.5 mb-5 flex-wrap">
             {["🇮🇳 India", "🇬🇧 UK", "🇺🇸 USA"].map((f) => (
               <span
